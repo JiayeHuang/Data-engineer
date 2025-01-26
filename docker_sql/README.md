@@ -5,7 +5,7 @@ This project is to build a data pipeline using docker, sql and implement cloud e
 This project comes from https://github.com/DataTalksClub/data-engineering-zoomcamp
 
 ## Environment preparation
-docker first run, to run docker container in an iterable way. Check the version of pip.
+docker first run, to run docker container in an interactive way. Check the version of pip.
 ```bash
 docker run -it python:3.12.8 bash
 pip --version
@@ -180,3 +180,10 @@ Which of the following sequences, **respectively**, describes the workflow for:
 1. Downloading the provider plugins and setting up backend,
 2. Generating proposed changes and auto-executing the plan
 3. Remove all resources managed by terraform`
+
+```bash
+terraform init
+terraform plan
+terraform apply -auto-approve
+terraform destroy
+```
