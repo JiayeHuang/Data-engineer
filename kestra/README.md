@@ -14,10 +14,6 @@ docker run
     -v /var/run/docker.sock:/var/run/docker.sock 
     -v /tmp:/tmp 
     kestra/kestra:latest server local
-8.3 MB
-- 134.5 MB
-- 364.7 MB
-- 692.6 MB
 ```
 
 ## GCP Setup
