@@ -39,15 +39,38 @@ def web_to_gcs(year, service, bucket):
 
         # download it using requests via a pandas df
         request_url = f"{init_url}{service}/{file_name}"
-        r = requests.get(request_url)
-        open(file_name, 'wb').write(r.content)
-        print(f"Local: {file_name}")
+        with requests.get(request_url) as r:
+            open(file_name, 'wb').write(r.content)
+            print(f"Local: {file_name}")
 
         # read it back into a parquet file
         df = pd.read_csv(file_name, compression='gzip')
+
+        # Cast data
+        if service == "fhv":
+            df["pickup_datetime"] = pd.to_datetime(df["pickup_datetime"])
+            df["dropOff_datetime"] = pd.to_datetime(df["dropOff_datetime"])
+            df["PUlocationID"] = df["PUlocationID"].astype('Int64')
+            df["DOlocationID"] = df["DOlocationID"].astype('Int64')
+            df["SR_Flag"] = df["SR_Flag"].astype('Int64')
+        else: 
+            df["VendorID"] = df["VendorID"].astype('Int64')
+            df["RatecodeID"] = df["RatecodeID"].astype('Int64')
+            df["PULocationID"] = df["PULocationID"].astype('Int64')
+            df["DOLocationID"] = df["DOLocationID"].astype('Int64')
+            df["passenger_count"] = df["passenger_count"].astype('Int64')
+            df["payment_type"] = df["payment_type"].astype('Int64')
+            if service == "yellow":
+                df["tpep_pickup_datetime"] = pd.to_datetime(df["tpep_pickup_datetime"])
+                df["tpep_dropoff_datetime"] = pd.to_datetime(df["tpep_dropoff_datetime"])
+            elif service == "green":
+                df["lpep_pickup_datetime"] = pd.to_datetime(df["lpep_pickup_datetime"])
+                df["lpep_dropoff_datetime"] = pd.to_datetime(df["lpep_dropoff_datetime"])
+                df["trip_type"] = df["trip_type"].astype('Int64')
+
         parquet_file_name = file_name.replace('.csv.gz', '.parquet')
         df.to_parquet(parquet_file_name, engine='pyarrow')
-        print(f"Parquet: {file_name}")
+        print(f"Parquet: {parquet_file_name}")
 
         # upload it to gcs 
         upload_to_gcs(bucket, f"{service}/{parquet_file_name}", parquet_file_name)
@@ -67,5 +90,5 @@ if __name__ == "__main__":
 
     init_url = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/'
     BUCKET = os.environ.get("GCP_GCS_BUCKET", args.bucket)
-    
+
     web_to_gcs(args.year, args.service, BUCKET)
