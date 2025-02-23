@@ -133,5 +133,12 @@ models:
 
   - name: fct_taxi_trips_monthly_fare_p95
     description: the continous percentile of fare_amount partitioning by service_type, year and and month
+    columns:
+      - name: fare_amout_p97
+        description: 97% continous percentile of fare_amount
 
+      - name: fare_amout_p95
+        description: 95% continous percentile of fare_amount
 
+      - name: fare_amout_p90
+        description: 90% continous percentile of fare_amount
