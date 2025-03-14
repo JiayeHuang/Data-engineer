@@ -1,2 +1,4 @@
 /pyspark/output_data/
 /pyspark/spark-warehouse/
+/kafka_pyflink/keys/
+/kafka_pyflink/data/
